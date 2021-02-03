@@ -2,6 +2,7 @@
 
 import pandas as pd
 from sklearn.svm import LinearSVC
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 modelo = LinearSVC()
@@ -21,14 +22,10 @@ dados = dados.rename(columns=mapa)
 x = dados[['principal', 'como_funciona', 'contato']]
 y = dados['comprou']
 
-treino_x = x[:75]
-treino_y = y[:75]
-teste_x = x[75:]
-teste_y = y[75:]
+treino_x, teste_x, treino_y, teste_y = train_test_split(x, y, test_size= 0.25)
+print(treino_x)
 
 modelo.fit(treino_x, treino_y)
 previsoes = modelo.predict(teste_x)
 
 acuracia = accuracy_score(teste_y, previsoes)
-
-print(acuracia)

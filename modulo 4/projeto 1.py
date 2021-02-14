@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from sklearn.feature_selection import RFE
+from sklearn.feature_selection import RFECV
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import seaborn as sns
@@ -108,5 +109,16 @@ classificador.fit(treino_rfe, treino_y)
 matriz_confusao = confusion_matrix(teste_y, classificador.predict(teste_rfe))
 sns.heatmap(matriz_confusao, annot=True, fmt="d").set(xlabel="Predição", ylabel="Real")
 print("resultado da rfe %.2f%%" % (classificador.score(teste_rfe, teste_y) * 100))
+
+plt.figure(5)
+
+selecionar_rfecv = RFECV(estimator=classificador, cv=5, step=1, scoring="accuracy")
+selecionar_rfecv.fit(treino_x, treino_y)
+treino_rfecv = selecionar_rfecv.transform(treino_x)
+teste_rfecv = selecionar_rfecv.transform(teste_x)
+classificador.fit(treino_rfecv, treino_y)
+matriz_confusao = confusion_matrix(teste_y, classificador.predict(teste_rfecv))
+print("resultado da rfecv %.2f%%" % (classificador.score(teste_rfecv, teste_y) * 100))
+sns.heatmap(matriz_confusao, annot=True, fmt="d").set(xlabel="Predição", ylabel="Real")
 
 plt.show()

@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import Normalizer
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, davies_bouldin_score
+from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 
 #importando os dados e criando o dataframe
 uri = "https://raw.githubusercontent.com/alura-cursos/alura-clustering-validation/base-de-dados/CC%20GENERAL.csv"
@@ -28,10 +28,13 @@ y_pred = kmeans.fit_predict(values)
 #achar o coeficiente de silhueta
 labels = kmeans.labels_
 silhouette = silhouette_score(values, labels=labels, metric="euclidean")
-print("coeficiente de silhueta: ", silhouette)
+print("Coeficiente de silhueta: ", silhouette)
 
 #achar o índice de Davies-Bouldin
 dbs = davies_bouldin_score(values, labels)
 print("Coeficiente de Davies-Bouldin: ", dbs)
 
+#achar o índice de Calinski-Harabasz
+calinski = calinski_harabasz_score(values, labels=labels)
+print("Coeficiente de Calinski-Harabasz: ", calinski)
 

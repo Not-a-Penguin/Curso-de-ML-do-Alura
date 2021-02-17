@@ -3,8 +3,8 @@ from numpy import random
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import chi2
+from sklearn.feature_selection import SelectKBest #algoritmo para selecionar automaticamente
+from sklearn.feature_selection import chi2 #função utilizada com selectkBest
 import seaborn as sns
 import matplotlib.pyplot as plt 
 
@@ -37,19 +37,19 @@ variaveis_correlacionadas = matriz_correlacao_v2[matriz_correlacao_v2>1]
 #valores_exames_v5 = valores_exames_v3.drop(columns = ["exame_3", "exame_24"])
 #classificar(valores_exames_v5)
 
-valores_exames_v6 = valores_exames_v1.drop(columns=['exame_3', 'exame_4', 'exame_29', 'exame_24'])
+valores_exames_v6 = valores_exames_v1.drop(columns=['exame_3', 'exame_4', 'exame_29', 'exame_24']) #retira colunas que não afetam o score
 
 def classificar(valores):
     SEED = 20
     random.seed(SEED)
-    selecionar_kmelhores = SelectKBest(score_func=chi2, k=5)
+    selecionar_kmelhores = SelectKBest(score_func=chi2, k=5) #cria o modelo e escolhe apenas 5 colunas como resultado
     treino_x, teste_x, treino_y, teste_y = train_test_split(valores, diagnostico, test_size = 0.3)
-    selecionar_kmelhores.fit(treino_x, treino_y)
-    treino_kbest = selecionar_kmelhores.transform(treino_x)
-    teste_kbest = selecionar_kmelhores.transform(teste_x)
-    classificador = RandomForestClassifier(n_estimators=100)
-    classificador.fit(treino_kbest, treino_y)
-    resultado = classificador.score(teste_kbest, teste_y)*100
+    selecionar_kmelhores.fit(treino_x, treino_y) #aplica os dados de treino para que os 5 melhores sejam escolhidos
+    treino_kbest = selecionar_kmelhores.transform(treino_x) #transforma o treino
+    teste_kbest = selecionar_kmelhores.transform(teste_x) #transforma o teste
+    classificador = RandomForestClassifier(n_estimators=100) 
+    classificador.fit(treino_kbest, treino_y) #aplica os dados no classificador
+    resultado = classificador.score(teste_kbest, teste_y)*100 
     print("Resultado do classificador= %.2f%%" % resultado)
 
 

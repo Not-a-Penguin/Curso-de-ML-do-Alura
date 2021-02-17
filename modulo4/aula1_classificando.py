@@ -1,7 +1,7 @@
 import pandas as pd
 from numpy import random
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier  #classificador que crias várias árvores de decisão
 from sklearn.dummy import DummyClassifier
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
@@ -15,33 +15,33 @@ resultados_exames = pd.read_csv(uri)
 
 SEED = 20
 random.seed(SEED)
-valores_exames = resultados_exames.drop(columns = ['id', 'diagnostico'])
+valores_exames = resultados_exames.drop(columns = ['id', 'diagnostico']) #usa o drop para  retirar colunas
 diagnostico = resultados_exames.diagnostico
 valores_exames_v1 = valores_exames.drop(columns='exame_33')
 
-padronizador = StandardScaler()
+padronizador = StandardScaler() #criar o modelo para reescalar os dados 
 padronizador.fit(valores_exames_v1)
-valores_exames_v2 = padronizador.transform(valores_exames_v1)
+valores_exames_v2 = padronizador.transform(valores_exames_v1) #reescala os dados
 valores_exames_v2 = pd.DataFrame(data = valores_exames_v2,
-                                columns = valores_exames_v1.keys())
+                                columns = valores_exames_v1.keys())  #converte o array em Dataframe
 #print(valores_exames_v2.head())
 treino_x, teste_x, treino_y, teste_y = train_test_split(valores_exames_v2, diagnostico, test_size = 0.3)
 
-classificador = RandomForestClassifier(n_estimators=100)
+classificador = RandomForestClassifier(n_estimators=100) #cria o modelo de classificação
 classificador.fit(treino_x, treino_y)
-resultado = classificador.score(teste_x, teste_y)*100
+resultado = classificador.score(teste_x, teste_y)*100 #usa o método score() para calcular a acurácia
 print("Resultado do classificador= %.2f%%" % resultado)
 
-classificador_bobo = DummyClassifier(strategy="most_frequent")
+classificador_bobo = DummyClassifier(strategy="most_frequent") #cria o algoritmo bobo com o valor mais frequente
 classificador_bobo.fit(treino_x, treino_y)
 resultado_bobo = classificador_bobo.score(teste_x, teste_y)*100
 print("Resultado do classificador bobo= %.2f%%" % resultado_bobo)
 
-dados_plot = pd.concat([diagnostico, valores_exames_v2.iloc[:,0:10]], axis = 1)
-dados_plot = pd.melt(dados_plot, id_vars="diagnostico", 
+dados_plot = pd.concat([diagnostico, valores_exames_v2.iloc[:,0:10]], axis = 1) #concatena o 10 primieros elementos
+dados_plot = pd.melt(dados_plot, id_vars="diagnostico", #reorganiza os dados para uma tabela com colunas 'diag', 'exames' 'valores_exames'
                  var_name="exames",
                  value_name="valores")
-#print(dados_plot.head())
+print(dados_plot.head())
 
 plt.figure(figsize=(10,10))
 

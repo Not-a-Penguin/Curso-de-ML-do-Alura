@@ -1,5 +1,5 @@
 import pandas as pd
-from numpy import random
+from numpy import random 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.dummy import DummyClassifier
@@ -23,8 +23,8 @@ valores_exames_v3 = valores_exames_v2.drop(columns=["exame_4", "exame_29"])
 
 def classificar(valores):
     SEED = 20
-    random.seed(SEED)
-    treino_x, teste_x, treino_y, teste_y = train_test_split(valores, diagnostico, test_size = 0.3)
+    random.seed(SEED) #usado para diminuir a aleatoriedade
+    treino_x, teste_x, treino_y, teste_y = train_test_split(valores, diagnostico, test_size = 0.3) #não precisa passar o random_state devido à linha acima
     classificador = RandomForestClassifier(n_estimators=100)
     classificador.fit(treino_x, treino_y)
     resultado = classificador.score(teste_x, teste_y)*100
@@ -44,18 +44,18 @@ def plotar_grafico(valores, inicio, fim):
     plt.show()   
 
 
-matriz_correlacao = valores_exames_v3.corr()
+matriz_correlacao = valores_exames_v3.corr() #cria uma matriz que correlaciona os valores dos exames, a fim de achar um grau de correlação
 plt.figure(figsize=(17,15))
 sns.heatmap(matriz_correlacao, annot=True, fmt=".1f")   
 matriz_correlacao_v1 = matriz_correlacao[matriz_correlacao>0.99]
 matriz_correlacao_v2 = matriz_correlacao_v1.sum()
 variaveis_correlacionadas = matriz_correlacao_v2[matriz_correlacao_v2>1]
 #print(variaveis_correlacionadas)
-#plt.show()
+plt.show()
 classificar(valores_exames_v2)
-valores_exames_v4 = valores_exames_v3.drop(columns=variaveis_correlacionadas.keys())
+valores_exames_v4 = valores_exames_v3.drop(columns=variaveis_correlacionadas.keys()) #retirando os exames altamente correlacionados
 #print(valores_exames_v4.head())
 classificar(valores_exames_v4)
 
-valores_exames_v5 = valores_exames_v3.drop(columns = ["exame_3", "exame_24"])
+valores_exames_v5 = valores_exames_v3.drop(columns = ["exame_3", "exame_24"]) #retirando os exames com valores cte
 classificar(valores_exames_v5)

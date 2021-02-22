@@ -61,3 +61,65 @@ def algoritmo_cluster(n_clusters, dados):
   calinski = metrics.calinski_harabasz_score(dados, labels_kmeans)
 
   return s, dbs, calinski
+
+s, dbs, calinski = algoritmo_cluster(3,valores_normalizados)
+print(" Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s, dbs, calinski))
+
+s_2, dbs_2, calinski_2 = algoritmo_cluster(5,valores_normalizados)
+print(" Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s_2, dbs_2, calinski_2))
+
+s_3, dbs_3, calinski_3 = algoritmo_cluster(10,valores_normalizados)
+print(" Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s_3, dbs_3, calinski_3))
+
+df.count() #Verificando a quantidade de dados que é 8950
+
+import numpy as np
+
+dados_aleatorios = np.random.rand(8950,16) #geramos uma matriz uniforme (ou seja, agrupada de um jeito padrão) do tamanho da nossa de dados, mas com valores aleatórios
+
+s_r, dbs_r, calinski_r = algoritmo_cluster(5, dados_aleatorios) #aplicamos a matriz random no modelo para clusterização
+
+#Abaixo podemos comparar nossa clusterização com a de dados aleatórios
+print(" Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s_r, dbs_r, calinski_r))
+print("\n Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s_2, dbs_2, calinski_2))
+
+set1, set2, set3 = np.array_split(valores_normalizados, 3) #dividindo nossos dados em três
+#aplicando cado grupo da linha acima para comparar nossos índices e compravar a estabilidade 
+s1, dbs1, calinski1 = algoritmo_cluster(5, set1)
+s2, dbs2, calinski2 = algoritmo_cluster(5, set2)
+s3, dbs3, calinski3 = algoritmo_cluster(5, set3)
+
+#Percebemos que para cada grupo, os índices não variam tanto, então nossa clusterização é estável
+print(" Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s1, dbs1, calinski1))
+print("\n Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s2, dbs2, calinski2))
+print("\n Coeficiente de silhueta: {0}\n Índice de Davies-Boulding: {1}\n Índice de Calinski-Harabasz: {2}".format(s3, dbs3, calinski3))
+
+import matplotlib.pyplot as plt
+
+plt.scatter(x= df['COMPRAS'], y= df['PAGAMENTOS'], c=labels_kmeans_0, s=5, cmap='rainbow')
+plt.xlabel("valor total de pago")
+plt.ylabel("valor total de gasto")
+plt.show()
+
+import seaborn as sns
+
+df["cluster"] = labels_kmeans_0
+
+#sns.pairplot(df[:0], hue="cluster")
+df.groupby(df["cluster"]).describe()
+centroides = modelo_kmeans_0.cluster_centers_ 
+#print(centroides)
+
+max =  len(centroides[0]) #pegando o número total de elementos
+
+for i in range(max):
+  print(df.columns.values[i], "{:.4f}\n".format(centroides[:,i].var()))
+
+descricao = df.groupby("cluster")["BALANCE", "COMPRAS", "CASH_ADVANCE", "CREDIT_LIMIT", "PAGAMENTOS"]
+n_clientes = descricao.size()
+descricao = descricao.mean()
+descricao['n_clientes'] = n_clientes
+print(descricao)
+
+df.groupby("cluster")["PRC_FULL_PAYMENT"].describe() #avalia o atributo de porcentagem de pagamento
+#percebe-se que cluster 0 possui a melhor média de pagamento

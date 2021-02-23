@@ -1,7 +1,7 @@
 import plotly.graph_objects as go #biblioteca para visualizar a clusterização em 3D
 import pandas as pd
 import numpy as np
-from biokit.viz import corrplot  #biblioteca para plotar o gráfico da  matriz de correlação
+#from biokit.viz import corrplot  #biblioteca para plotar o gráfico da  matriz de correlação
 import matplotlib.pyplot as plt
 
 uri = "https://raw.githubusercontent.com/Not-a-Penguin/Curso-de-ML-do-Alura/Jo%C3%A3o/Wine.csv"

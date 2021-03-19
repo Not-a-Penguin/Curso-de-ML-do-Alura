@@ -7,16 +7,11 @@ Original file is located at
     https://colab.research.google.com/drive/1E22Zvo6IW9FNVwWhqGEnZcd5bKMimUjL
 """
 
-!pip install seaborn==0.9.0
 
 import seaborn as sns
 
 print(sns.__version__)
 
-!pip install graphviz==0.9
-!pip install pydot
-
-!apt-get install graphviz
 
 import pandas as pd
 
